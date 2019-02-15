@@ -14,7 +14,7 @@ const httpOptions = {
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
 
-  private reservationsUrl = 'api/reservations';  // URL to web api
+  private reservationsUrl = 'http://localhost:1111/api/roster-microservice/reservation';  // URL to web api
 
   constructor(
     private http: HttpClient,
@@ -22,7 +22,8 @@ export class ReservationService {
 
   /** GET reservations from the server */
   getReservations (): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(this.reservationsUrl)
+    const url = `${this.reservationsUrl}/all`;
+    return this.http.get<Reservation[]>(url)
       .pipe(
         tap(_ => this.log('fetched reservations')),
         catchError(this.handleError('getReservations', []))
@@ -31,7 +32,7 @@ export class ReservationService {
 
   /** GET reservation by id. Return `undefined` when id not found */
   getReservationNo404<Data>(id: number): Observable<Reservation> {
-    const url = `${this.reservationsUrl}/?id=${id}`;
+    const url = `${this.reservationsUrl}/${id}`;
     return this.http.get<Reservation[]>(url)
       .pipe(
         map(reservations => reservations[0]), // returns a {0|1} element array
@@ -58,7 +59,7 @@ export class ReservationService {
       // if not search term, return empty reservation array.
       return of([]);
     }
-    return this.http.get<Reservation[]>(`${this.reservationsUrl}/?name=${term}`).pipe(
+    return this.http.get<Reservation[]>(`${this.reservationsUrl}/search/${term}`).pipe(
       tap(_ => this.log(`found reservations matching "${term}"`)),
       catchError(this.handleError<Reservation[]>('searchReservations', []))
     );
@@ -68,16 +69,18 @@ export class ReservationService {
 
   /** POST: add a new reservation to the server */
   addReservation (reservation: Reservation): Observable<Reservation> {
-    return this.http.post<Reservation>(this.reservationsUrl, reservation, httpOptions).pipe(
-      tap((newReservation: Reservation) => this.log(`added Reservation w/ id=${newReservation.id}`)),
+    const url = `${this.reservationsUrl}/add`;
+
+    return this.http.post<Reservation>(url, reservation, httpOptions).pipe(
+      tap((newReservation: Reservation) => this.log(`added Reservation w/ id=${newReservation.tableReservationId}`)),
       catchError(this.handleError<Reservation>('addReservation'))
     );
   }
 
   /** DELETE: delete the reservation from the server */
   deleteReservation (reservation: Reservation | number): Observable<Reservation> {
-    const id = typeof reservation === 'number' ? reservation : reservation.id;
-    const url = `${this.reservationsUrl}/${id}`;
+    const id = typeof reservation === 'number' ? reservation : reservation.tableReservationId;
+    const url = `${this.reservationsUrl}/delete/${id}`;
 
     return this.http.delete<Reservation>(url, httpOptions).pipe(
       tap(_ => this.log(`deleted reservation id=${id}`)),
@@ -85,10 +88,11 @@ export class ReservationService {
     );
   }
 
-  /** PUT: update the reservation on the server */
+  /** POST: update the reservation on the server */
   updateReservation (reservation: Reservation): Observable<any> {
-    return this.http.put(this.reservationsUrl, reservation, httpOptions).pipe(
-      tap(_ => this.log(`updated reservation id=${reservation.id}`)),
+    const url = `${this.reservationsUrl}/update`;
+    return this.http.post(url, reservation, httpOptions).pipe(
+      tap(_ => this.log(`updated reservation id=${reservation.tableReservationId}`)),
       catchError(this.handleError<any>('updateReservation'))
     );
   }
