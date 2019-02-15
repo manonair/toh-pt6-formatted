@@ -5,27 +5,27 @@ import { ReservationService } from '../reservation.service';
 
 @Component({
   selector: 'app-heroes',
-  templateUrl: './heroes.component.html',
-  styleUrls: ['./heroes.component.css']
+  templateUrl: './reservations.component.html',
+  styleUrls: ['./reservations.component.css']
 })
-export class HeroesComponent implements OnInit {
+export class ReservationsComponent implements OnInit {
   heroes: Reservation[];
 
-  constructor(private heroService: ReservationService) { }
+  constructor(private reservationService: ReservationService) { }
 
   ngOnInit() {
-    this.getHeroes();
+    this.getReservations();
   }
 
-  getHeroes(): void {
-    this.heroService.getReservations()
+  getReservations(): void {
+    this.reservationService.getReservations()
     .subscribe(heroes => this.heroes = heroes);
   }
 
   add(name: string): void {
     name = name.trim();
     if (!name) { return; }
-    this.heroService.addReservation({ name } as Reservation)
+    this.reservationService.addReservation({ name } as Reservation)
       .subscribe(hero => {
         this.heroes.push(hero);
       });
@@ -33,7 +33,7 @@ export class HeroesComponent implements OnInit {
 
   delete(hero: Reservation): void {
     this.heroes = this.heroes.filter(h => h !== hero);
-    this.heroService.deleteReservation(hero).subscribe();
+    this.reservationService.deleteReservation(hero).subscribe();
   }
 
 }
