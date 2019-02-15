@@ -8,16 +8,16 @@ import { ReservationService } from '../reservation.service';
   styleUrls: [ './dashboard.component.css' ]
 })
 export class DashboardComponent implements OnInit {
-  heroes: Reservation[] = [];
+  reservations: Reservation[] = [];
 
-  constructor(private heroService: ReservationService) { }
+  constructor(private reservationService: ReservationService) { }
 
   ngOnInit() {
-    this.getHeroes();
+    this.getReservations();
   }
 
-  getHeroes(): void {
-    this.heroService.getReservations()
-      .subscribe(heroes => this.heroes = heroes.slice(1, 5));
+  getReservations(): void {
+    this.reservationService.getReservations()
+      .subscribe(reservations => this.reservations = reservations.slice(1, 5));
   }
 }

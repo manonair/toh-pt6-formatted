@@ -22,11 +22,11 @@ export class InMemoryDataService implements InMemoryDbService {
     return {reservations: reservations};
   }
 
-  // Overrides the genId method to ensure that a hero always has an id.
+  // Overrides the genId method to ensure that a Reservation always has an id.
   // If the reservations array is empty,
   // the method below returns the initial number (11).
   // if the reservations array is not empty, the method below returns the highest
-  // hero id + 1.
+  // reservation id + 1.
   genId(reservations: Reservation[]): number {
     return reservations.length > 0 ? Math.max(...reservations.map(reservation => reservation.id)) + 1 : 11;
   }

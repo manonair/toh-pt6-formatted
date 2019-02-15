@@ -10,15 +10,15 @@ import { Reservation } from '../reservation';
 import { ReservationService } from '../reservation.service';
 
 @Component({
-  selector: 'app-hero-search',
-  templateUrl: './hero-search.component.html',
-  styleUrls: [ './hero-search.component.css' ]
+  selector: 'app-reservation-search',
+  templateUrl: './reservation-search.component.html',
+  styleUrls: [ './reservation-search.component.css' ]
 })
-export class HeroSearchComponent implements OnInit {
-  heroes$: Observable<Reservation[]>;
+export class ReservationSearchComponent implements OnInit {
+  reservations$: Observable<Reservation[]>;
   private searchTerms = new Subject<string>();
 
-  constructor(private heroService: ReservationService) {}
+  constructor(private reservationService: ReservationService) {}
 
   // Push a search term into the observable stream.
   search(term: string): void {
@@ -26,7 +26,7 @@ export class HeroSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.heroes$ = this.searchTerms.pipe(
+    this.reservations$ = this.searchTerms.pipe(
       // wait 300ms after each keystroke before considering the term
       debounceTime(300),
 
@@ -34,7 +34,7 @@ export class HeroSearchComponent implements OnInit {
       distinctUntilChanged(),
 
       // switch to new search observable each time the term changes
-      switchMap((term: string) => this.heroService.searchReservations(term)),
+      switchMap((term: string) => this.reservationService.searchReservations(term)),
     );
   }
 }

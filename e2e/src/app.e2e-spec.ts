@@ -3,37 +3,37 @@
 import { browser, element, by, ElementFinder, ElementArrayFinder } from 'protractor';
 import { promise } from 'selenium-webdriver';
 
-const expectedH1 = 'Tour of Heroes';
+const expectedH1 = 'Tour of Reservations';
 const expectedTitle = `${expectedH1}`;
-const targetHero = { id: 15, name: 'Magneta' };
-const targetHeroDashboardIndex = 3;
+const targetReservation = { id: 15, name: 'Magneta' };
+const targetReservationDashboardIndex = 3;
 const nameSuffix = 'X';
-const newHeroName = targetHero.name + nameSuffix;
+const newReservationName = targetReservation.name + nameSuffix;
 
-class Hero {
+class Reservation {
   id: number;
   name: string;
 
   // Factory methods
 
-  // Hero from string formatted as '<id> <name>'.
-  static fromString(s: string): Hero {
+  // Reservations from string formatted as '<id> <name>'.
+  static fromString(s: string): Reservation {
     return {
       id: +s.substr(0, s.indexOf(' ')),
       name: s.substr(s.indexOf(' ') + 1),
     };
   }
 
-  // Hero from hero list <li> element.
-  static async fromLi(li: ElementFinder): Promise<Hero> {
+  // Reservations from Reservations list <li> element.
+  static async fromLi(li: ElementFinder): Promise<Reservation> {
       let stringsFromA = await li.all(by.css('a')).getText();
       let strings = stringsFromA[0].split(' ');
       return { id: +strings[0], name: strings[1] };
   }
 
-  // Hero id and name from the given detail element.
-  static async fromDetail(detail: ElementFinder): Promise<Hero> {
-    // Get hero id from the first <div>
+  // Reservations id and name from the given detail element.
+  static async fromDetail(detail: ElementFinder): Promise<Reservation> {
+    // Get Reservations id from the first <div>
     let _id = await detail.all(by.css('div')).first().getText();
     // Get name from the h2
     let _name = await detail.element(by.css('h2')).getText();
@@ -56,14 +56,14 @@ describe('Tutorial part 6', () => {
 
       appDashboardHref: navElts.get(0),
       appDashboard: element(by.css('app-root app-dashboard')),
-      topHeroes: element.all(by.css('app-root app-dashboard > div h4')),
+      topReservations: element.all(by.css('app-root app-dashboard > div h4')),
 
-      appHeroesHref: navElts.get(1),
-      appHeroes: element(by.css('app-root app-heroes')),
-      allHeroes: element.all(by.css('app-root app-heroes li')),
-      selectedHeroSubview: element(by.css('app-root app-heroes > div:last-child')),
+      appReservationsHref: navElts.get(1),
+      appReservations: element(by.css('app-root app-reservations')),
+      allReservations: element.all(by.css('app-root app-reservationes li')),
+      selectedReservationSubview: element(by.css('app-root app-reservations > div:last-child')),
 
-      heroDetail: element(by.css('app-root app-hero-detail > div')),
+      ReservationDetail: element(by.css('app-root app-reservation-detail > div')),
 
       searchBox: element(by.css('#search-box')),
       searchResults: element.all(by.css('.search-result li'))
@@ -80,7 +80,7 @@ describe('Tutorial part 6', () => {
         expectHeading(1, expectedH1);
     });
 
-    const expectedViewNames = ['Dashboard', 'Heroes'];
+    const expectedViewNames = ['Dashboard', 'Reservations'];
     it(`has views ${expectedViewNames}`, () => {
       let viewNames = getPageElts().navElts.map((el: ElementFinder) => el.getText());
       expect(viewNames).toEqual(expectedViewNames);
@@ -97,98 +97,98 @@ describe('Tutorial part 6', () => {
 
     beforeAll(() => browser.get(''));
 
-    it('has top heroes', () => {
+    it('has top reservations', () => {
       let page = getPageElts();
-      expect(page.topHeroes.count()).toEqual(4);
+      expect(page.topReservations.count()).toEqual(4);
     });
 
-    it(`selects and routes to ${targetHero.name} details`, dashboardSelectTargetHero);
+    it(`selects and routes to ${targetReservation.name} details`, dashboardSelectTargetReservations);
 
-    it(`updates hero name (${newHeroName}) in details view`, updateHeroNameInDetailView);
+    it(`updates reservation name (${newReservationName}) in details view`, updateReservationsNameInDetailView);
 
-    it(`cancels and shows ${targetHero.name} in Dashboard`, () => {
+    it(`cancels and shows ${targetReservation.name} in Dashboard`, () => {
       element(by.buttonText('go back')).click();
       browser.waitForAngular(); // seems necessary to gets tests to pass for toh-pt6
 
-      let targetHeroElt = getPageElts().topHeroes.get(targetHeroDashboardIndex);
-      expect(targetHeroElt.getText()).toEqual(targetHero.name);
+      let targetReservationElt = getPageElts().topReservations.get(targetReservationDashboardIndex);
+      expect(targetReservationElt.getText()).toEqual(targetReservation.name);
     });
 
-    it(`selects and routes to ${targetHero.name} details`, dashboardSelectTargetHero);
+    it(`selects and routes to ${targetReservation.name} details`, dashboardSelectTargetReservations);
 
-    it(`updates hero name (${newHeroName}) in details view`, updateHeroNameInDetailView);
+    it(`updates reservation name (${newReservationName}) in details view`, updateReservationNameInDetailView);
 
-    it(`saves and shows ${newHeroName} in Dashboard`, () => {
+    it(`saves and shows ${newReservationName} in Dashboard`, () => {
       element(by.buttonText('save')).click();
       browser.waitForAngular(); // seems necessary to gets tests to pass for toh-pt6
 
-      let targetHeroElt = getPageElts().topHeroes.get(targetHeroDashboardIndex);
-      expect(targetHeroElt.getText()).toEqual(newHeroName);
+      let targetReservationElt = getPageElts().topReservations.get(targetReservationDashboardIndex);
+      expect(targetReservationElt.getText()).toEqual(newReservationName);
     });
 
   });
 
-  describe('Heroes tests', () => {
+  describe('Reservations tests', () => {
 
     beforeAll(() => browser.get(''));
 
-    it('can switch to Heroes view', () => {
-      getPageElts().appHeroesHref.click();
+    it('can switch to Reservations view', () => {
+      getPageElts().appReservationsHref.click();
       let page = getPageElts();
-      expect(page.appHeroes.isPresent()).toBeTruthy();
-      expect(page.allHeroes.count()).toEqual(10, 'number of heroes');
+      expect(page.appReservations.isPresent()).toBeTruthy();
+      expect(page.allReservations.count()).toEqual(10, 'number of reservations');
     });
 
-    it('can route to hero details', async () => {
-      getHeroLiEltById(targetHero.id).click();
+    it('can route to reservation details', async () => {
+      getReservationLiEltById(targetReservation.id).click();
 
       let page = getPageElts();
-      expect(page.heroDetail.isPresent()).toBeTruthy('shows hero detail');
-      let hero = await Hero.fromDetail(page.heroDetail);
-      expect(hero.id).toEqual(targetHero.id);
-      expect(hero.name).toEqual(targetHero.name.toUpperCase());
+      expect(page.ReservationDetail.isPresent()).toBeTruthy('shows reservation detail');
+      let reservation = await Reservation.fromDetail(page.ReservationDetail);
+      expect(reservation.id).toEqual(targetReservation.id);
+      expect(reservation.name).toEqual(targetReservation.name.toUpperCase());
     });
 
-    it(`updates hero name (${newHeroName}) in details view`, updateHeroNameInDetailView);
+    it(`updates reservation name (${newReservationName}) in details view`, updateReservationNameInDetailView);
 
-    it(`shows ${newHeroName} in Heroes list`, () => {
+    it(`shows ${newReservationName} in Reservations list`, () => {
       element(by.buttonText('save')).click();
       browser.waitForAngular();
-      let expectedText = `${targetHero.id} ${newHeroName}`;
-      expect(getHeroAEltById(targetHero.id).getText()).toEqual(expectedText);
+      let expectedText = `${targetReservation.id} ${newReservationName}`;
+      expect(getReservationAEltById(targetReservation.id).getText()).toEqual(expectedText);
     });
 
-    it(`deletes ${newHeroName} from Heroes list`, async () => {
-      const heroesBefore = await toHeroArray(getPageElts().allHeroes);
-      const li = getHeroLiEltById(targetHero.id);
+    it(`deletes ${newReservationName} from Reservations list`, async () => {
+      const reservationsBefore = await tReservationArray(getPageElts().allReservations);
+      const li = getReservationLiEltById(targetReservation.id);
       li.element(by.buttonText('x')).click();
 
       const page = getPageElts();
-      expect(page.appHeroes.isPresent()).toBeTruthy();
-      expect(page.allHeroes.count()).toEqual(9, 'number of heroes');
-      const heroesAfter = await toHeroArray(page.allHeroes);
-      // console.log(await Hero.fromLi(page.allHeroes[0]));
-      const expectedHeroes =  heroesBefore.filter(h => h.name !== newHeroName);
-      expect(heroesAfter).toEqual(expectedHeroes);
-      // expect(page.selectedHeroSubview.isPresent()).toBeFalsy();
+      expect(page.appReservations.isPresent()).toBeTruthy();
+      expect(page.allReservations.count()).toEqual(9, 'number of reservations');
+      const ReservationsAfter = await toReservationArray(page.allReservations);
+      // console.log(await Reservation.fromLi(page.allReservations[0]));
+      const expectedReservations =  reservationsBefore.filter(h => h.name !== newReservationName);
+      expect(reservationsAfter).toEqual(expectedReservations);
+      // expect(page.selectedReservationSubview.isPresent()).toBeFalsy();
     });
 
-    it(`adds back ${targetHero.name}`, async () => {
-      const newHeroName = 'Alice';
-      const heroesBefore = await toHeroArray(getPageElts().allHeroes);
-      const numHeroes = heroesBefore.length;
+    it(`adds back ${targetReservation.name}`, async () => {
+      const newReservationName = 'Alice';
+      const reservationsBefore = await toReservationArray(getPageElts().allReservations);
+      const numReservations = reservationsBefore.length;
 
-      element(by.css('input')).sendKeys(newHeroName);
+      element(by.css('input')).sendKeys(newReservationName);
       element(by.buttonText('add')).click();
 
       let page = getPageElts();
-      let heroesAfter = await toHeroArray(page.allHeroes);
-      expect(heroesAfter.length).toEqual(numHeroes + 1, 'number of heroes');
+      let reservationsAfter = await toReservationArray(page.allReservations);
+      expect(reservationsAfter.length).toEqual(numReservations + 1, 'number of reservations');
 
-      expect(heroesAfter.slice(0, numHeroes)).toEqual(heroesBefore, 'Old heroes are still there');
+      expect(reservationsAfter.slice(0, numReservations)).toEqual(reservationsBefore, 'Old reservations are still there');
 
-      const maxId = heroesBefore[heroesBefore.length - 1].id;
-      expect(heroesAfter[numHeroes]).toEqual({id: maxId + 1, name: newHeroName});
+      const maxId = reservationsBefore[reservationsBefore.length - 1].id;
+      expect(reservationsAfter[numReservations]).toEqual({id: maxId + 1, name: newReservationName});
     });
 
     it('displays correctly styled buttons', async () => {
@@ -199,7 +199,7 @@ describe('Tutorial part 6', () => {
           expect(button.getCssValue('border')).toContain('none');
           expect(button.getCssValue('padding')).toBe('5px 10px');
           expect(button.getCssValue('border-radius')).toBe('4px');
-          // Styles defined in heroes.component.css
+          // Styles defined in reservations.component.css
           expect(button.getCssValue('left')).toBe('194px');
           expect(button.getCssValue('top')).toBe('-32px');
         }
@@ -215,7 +215,7 @@ describe('Tutorial part 6', () => {
 
   });
 
-  describe('Progressive hero search', () => {
+  describe('Progressive reservation search', () => {
 
     beforeAll(() => browser.get(''));
 
@@ -232,54 +232,54 @@ describe('Tutorial part 6', () => {
       expect(getPageElts().searchResults.count()).toBe(2);
     });
 
-    it(`continues search with 'e' and gets ${targetHero.name}`, async () => {
+    it(`continues search with 'e' and gets ${targetReservation.name}`, async () => {
       getPageElts().searchBox.sendKeys('n');
       browser.sleep(1000);
       let page = getPageElts();
       expect(page.searchResults.count()).toBe(1);
-      let hero = page.searchResults.get(0);
-      expect(hero.getText()).toEqual(targetHero.name);
+      let reservation = page.searchResults.get(0);
+      expect(reservation.getText()).toEqual(targetReservation.name);
     });
 
-    it(`navigates to ${targetHero.name} details view`, async () => {
-      let hero = getPageElts().searchResults.get(0);
-      expect(hero.getText()).toEqual(targetHero.name);
-      hero.click();
+    it(`navigates to ${targetReservation.name} details view`, async () => {
+      let reservation = getPageElts().searchResults.get(0);
+      expect(reservation.getText()).toEqual(targetReservation.name);
+      reservation.click();
 
       let page = getPageElts();
-      expect(page.heroDetail.isPresent()).toBeTruthy('shows hero detail');
-      let hero2 = await Hero.fromDetail(page.heroDetail);
-      expect(hero2.id).toEqual(targetHero.id);
-      expect(hero2.name).toEqual(targetHero.name.toUpperCase());
+      expect(page.ReservationDetail.isPresent()).toBeTruthy('shows reservation detail');
+      let reservation2 = await Reservation.fromDetail(page.ReservationDetail);
+      expect(reservation2.id).toEqual(targetReservation.id);
+      expect(reservation2.name).toEqual(targetReservation.name.toUpperCase());
     });
   });
 
-  async function dashboardSelectTargetHero() {
-    let targetHeroElt = getPageElts().topHeroes.get(targetHeroDashboardIndex);
-    expect(targetHeroElt.getText()).toEqual(targetHero.name);
-    targetHeroElt.click();
+  async function dashboardSelectTargetReservations() {
+    let targetReservationElt = getPageElts().topReservations.get(targetReservationDashboardIndex);
+    expect(targetReservationElt.getText()).toEqual(targetReservation.name);
+    targetReservationElt.click();
     browser.waitForAngular(); // seems necessary to gets tests to pass for toh-pt6
 
     let page = getPageElts();
-    expect(page.heroDetail.isPresent()).toBeTruthy('shows hero detail');
-    let hero = await Hero.fromDetail(page.heroDetail);
-    expect(hero.id).toEqual(targetHero.id);
-    expect(hero.name).toEqual(targetHero.name.toUpperCase());
+    expect(page.ReservationDetail.isPresent()).toBeTruthy('shows reservation detail');
+    let reservation = await Reservation.fromDetail(page.ReservationDetail);
+    expect(reservation.id).toEqual(targetReservation.id);
+    expect(reservation.name).toEqual(targetReservation.name.toUpperCase());
   }
 
-  async function updateHeroNameInDetailView() {
-    // Assumes that the current view is the hero details view.
-    addToHeroName(nameSuffix);
+  async function updateReservationNameInDetailView() {
+    // Assumes that the current view is the Reservation details view.
+    addToReservationName(nameSuffix);
 
     let page = getPageElts();
-    let hero = await Hero.fromDetail(page.heroDetail);
-    expect(hero.id).toEqual(targetHero.id);
-    expect(hero.name).toEqual(newHeroName.toUpperCase());
+    let reservation = await Reservation.fromDetail(page.ReservationDetail);
+    expect(reservation.id).toEqual(targetReservation.id);
+    expect(reservation.name).toEqual(newReservationName.toUpperCase());
   }
 
 });
 
-function addToHeroName(text: string): promise.Promise<void> {
+function addToReservationName(text: string): promise.Promise<void> {
   let input = element(by.css('input'));
   return input.sendKeys(text);
 }
@@ -290,18 +290,18 @@ function expectHeading(hLevel: number, expectedText: string): void {
     expect(hText).toEqual(expectedText, hTag);
 };
 
-function getHeroAEltById(id: number): ElementFinder {
+function getReservationAEltById(id: number): ElementFinder {
   let spanForId = element(by.cssContainingText('li span.badge', id.toString()));
   return spanForId.element(by.xpath('..'));
 }
 
-function getHeroLiEltById(id: number): ElementFinder {
+function getReservationLiEltById(id: number): ElementFinder {
   let spanForId = element(by.cssContainingText('li span.badge', id.toString()));
   return spanForId.element(by.xpath('../..'));
 }
 
-async function toHeroArray(allHeroes: ElementArrayFinder): Promise<Hero[]> {
-  let promisedHeroes = await allHeroes.map(Hero.fromLi);
+async function toReservationArray(allReservations: ElementArrayFinder): Promise<Reservation[]> {
+  let promisedReservations = await allReservations.map(Reservation.fromLi);
   // The cast is necessary to get around issuing with the signature of Promise.all()
-  return <Promise<any>> Promise.all(promisedHeroes);
+  return <Promise<any>> Promise.all(promisedReservations);
 }

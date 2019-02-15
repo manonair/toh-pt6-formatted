@@ -6,27 +6,27 @@ import { Reservation }         from '../reservation';
 import { ReservationService }  from '../reservation.service';
 
 @Component({
-  selector: 'app-hero-detail',
-  templateUrl: './hero-detail.component.html',
-  styleUrls: [ './hero-detail.component.css' ]
+  selector: 'app-reservation-detail',
+  templateUrl: './reservation-detail.component.html',
+  styleUrls: [ './reservation-detail.component.css' ]
 })
-export class HeroDetailComponent implements OnInit {
-  @Input() hero: Reservation;
+export class ReservationDetailComponent implements OnInit {
+  @Input() reservation: Reservation;
 
   constructor(
     private route: ActivatedRoute,
-    private heroService: ReservationService,
+    private reservationService: ReservationService,
     private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.getHero();
+    this.getReservation();
   }
 
-  getHero(): void {
+  getReservation(): void {
     const id = +this.route.snapshot.paramMap.get('id');
-    this.heroService.getReservation(id)
-      .subscribe(hero => this.hero = hero);
+    this.reservationService.getReservation(id)
+      .subscribe(reservation => this.reservation = reservation);
   }
 
   goBack(): void {
@@ -34,7 +34,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
  save(): void {
-    this.heroService.updateReservation(this.hero)
+    this.reservationService.updateReservation(this.reservation)
       .subscribe(() => this.goBack());
   }
 }

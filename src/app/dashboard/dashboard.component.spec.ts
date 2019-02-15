@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
-import { HeroSearchComponent } from '../hero-search/hero-search.component';
+import { ReservationSearchComponent as ReservationSearchComponent } from '../reservation-search/reservation-search.component';
 
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -15,12 +15,12 @@ describe('DashboardComponent', () => {
   let getReservationsSpy;
 
   beforeEach(async(() => {
-    reservationService = jasmine.createSpyObj('HeroService', ['getReservations']);
+    reservationService = jasmine.createSpyObj('ReservationService', ['getReservations']);
     getReservationsSpy = reservationService.getReservations.and.returnValue( of(RESERVATIONS) );
     TestBed.configureTestingModule({
       declarations: [
         DashboardComponent,
-        HeroSearchComponent
+        ReservationSearchComponent
       ],
       imports: [
         RouterTestingModule.withRoutes([])
@@ -47,7 +47,7 @@ describe('DashboardComponent', () => {
     expect(fixture.nativeElement.querySelector('h3').textContent).toEqual('Top Reservations');
   });
 
-  it('should call heroService', async(() => {
+  it('should call reservationService', async(() => {
     expect(getReservationsSpy.calls.any()).toBe(true);
     }));
 

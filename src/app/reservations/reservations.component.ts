@@ -4,12 +4,12 @@ import { Reservation } from '../reservation';
 import { ReservationService } from '../reservation.service';
 
 @Component({
-  selector: 'app-heroes',
+  selector: 'app-reservations',
   templateUrl: './reservations.component.html',
   styleUrls: ['./reservations.component.css']
 })
 export class ReservationsComponent implements OnInit {
-  heroes: Reservation[];
+  reservations: Reservation[];
 
   constructor(private reservationService: ReservationService) { }
 
@@ -19,21 +19,21 @@ export class ReservationsComponent implements OnInit {
 
   getReservations(): void {
     this.reservationService.getReservations()
-    .subscribe(heroes => this.heroes = heroes);
+    .subscribe(reservations => this.reservations = reservations);
   }
 
   add(name: string): void {
     name = name.trim();
     if (!name) { return; }
     this.reservationService.addReservation({ name } as Reservation)
-      .subscribe(hero => {
-        this.heroes.push(hero);
+      .subscribe(reservation => {
+        this.reservations.push(reservation);
       });
   }
 
-  delete(hero: Reservation): void {
-    this.heroes = this.heroes.filter(h => h !== hero);
-    this.reservationService.deleteReservation(hero).subscribe();
+  delete(reservation: Reservation): void {
+    this.reservations = this.reservations.filter(h => h !== reservation);
+    this.reservationService.deleteReservation(reservation).subscribe();
   }
 
 }
