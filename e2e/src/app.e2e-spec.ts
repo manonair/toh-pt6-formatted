@@ -104,7 +104,7 @@ describe('Tutorial part 6', () => {
 
     it(`selects and routes to ${targetReservation.name} details`, dashboardSelectTargetReservations);
 
-    it(`updates reservation name (${newReservationName}) in details view`, updateReservationsNameInDetailView);
+    it(`updates reservation name (${newReservationName}) in details view`, updateReservationNameInDetailView);
 
     it(`cancels and shows ${targetReservation.name} in Dashboard`, () => {
       element(by.buttonText('go back')).click();
@@ -159,7 +159,7 @@ describe('Tutorial part 6', () => {
     });
 
     it(`deletes ${newReservationName} from Reservations list`, async () => {
-      const reservationsBefore = await tReservationArray(getPageElts().allReservations);
+      const reservationsBefore = await toReservationArray(getPageElts().allReservations);
       const li = getReservationLiEltById(targetReservation.id);
       li.element(by.buttonText('x')).click();
 
@@ -169,7 +169,7 @@ describe('Tutorial part 6', () => {
       const ReservationsAfter = await toReservationArray(page.allReservations);
       // console.log(await Reservation.fromLi(page.allReservations[0]));
       const expectedReservations =  reservationsBefore.filter(h => h.name !== newReservationName);
-      expect(reservationsAfter).toEqual(expectedReservations);
+      expect(ReservationsAfter).toEqual(expectedReservations);
       // expect(page.selectedReservationSubview.isPresent()).toBeFalsy();
     });
 
